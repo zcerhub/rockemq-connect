@@ -34,11 +34,7 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -147,6 +143,7 @@ public class RestHandler {
         try {
             keyValue = JSON.parseObject(arg, Map.class);
         } catch (JSONException e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             context.json(new ErrorMessage(HttpStatus.BAD_REQUEST_400, "Failed! query param 'config' is malformed"));
             return;
         }
@@ -160,6 +157,7 @@ public class RestHandler {
             connectController.putConnectorConfig(connectorName, configs);
             context.json(new HttpResponse<>(context.status(), keyValue));
         } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
             log.error("Create connector failed .", e);
             context.json(new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR_500, e.getMessage()));
         }

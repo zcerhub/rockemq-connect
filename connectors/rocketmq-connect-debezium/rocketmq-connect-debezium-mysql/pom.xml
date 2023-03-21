@@ -63,6 +63,17 @@
             <artifactId>kafka-connect-adaptor</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-api</artifactId>
+            <version>1.24.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.opentelemetry</groupId>
+            <artifactId>opentelemetry-sdk</artifactId>
+            <version>1.24.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

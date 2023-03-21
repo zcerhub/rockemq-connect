@@ -44,10 +44,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.client.indices.CreateIndexRequest;
-import org.elasticsearch.client.indices.GetMappingsRequest;
-import org.elasticsearch.client.indices.GetMappingsResponse;
-import org.elasticsearch.client.indices.PutMappingRequest;
+import org.elasticsearch.client.indices.*;
 import org.elasticsearch.cluster.metadata.MappingMetadata;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -70,6 +67,7 @@ public class ElasticsearchSinkTask extends SinkTask {
     private static final String PROPERTIES_FIELD = "properties";
 
     private static final String TYPE_FIELD = "type";
+
 
     @Override
     public void put(List<ConnectRecord> sinkRecords) throws ConnectException {
@@ -132,6 +130,19 @@ public class ElasticsearchSinkTask extends SinkTask {
         if (indexCache.contains(index)) {
             return;
         }
+
+        GetIndexRequest getIndexRequest=new GetIndexRequest(index);
+        try {
+            boolean indexExists=restHighLevelClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT);
+            if (indexExists) {
+                return;
+            }
+        } catch (IOException e) {
+            log.error("create index failed", e);
+            return;
+        }
+
+
         CreateIndexRequest request = new CreateIndexRequest(index);
         try {
             restHighLevelClient.indices().create(request, RequestOptions.DEFAULT);

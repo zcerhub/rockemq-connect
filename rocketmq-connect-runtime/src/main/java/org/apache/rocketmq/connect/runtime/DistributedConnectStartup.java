@@ -131,6 +131,8 @@ public class DistributedConnectStartup {
                 in.close();
             }
 
+            config.setConnectHome("D:\\code\\rocketmq-connect\\distribution");
+
             if (null == config.getConnectHome()) {
                 System.out.printf("Please set the %s variable in your environment to match the location of the Connect installation", WorkerConfig.CONNECT_HOME_ENV);
                 System.exit(-2);
@@ -140,7 +142,7 @@ public class DistributedConnectStartup {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
-            configurator.doConfigure(config.getConnectHome() + "/conf/logback.xml");
+            configurator.doConfigure(config.getConnectHome() + "\\conf\\logback.xml");
 
             List<String> pluginPaths = new ArrayList<>(16);
             if (StringUtils.isNotEmpty(config.getPluginPaths())) {

@@ -53,6 +53,9 @@ public class WorkerConfig {
      */
     private String namesrvAddr = System.getProperty(MixAll.NAMESRV_ADDR_PROPERTY, System.getenv(MixAll.NAMESRV_ADDR_ENV));
 
+    private boolean enableMsgTrace;
+    private String customizedTraceTopic;
+
     /**
      * Http port for REST API.
      */
@@ -225,6 +228,14 @@ public class WorkerConfig {
     private String configManagementService;
     private String positionManagementService;
     private String stateManagementService;
+
+    public String getCustomizedTraceTopic() {
+        return customizedTraceTopic;
+    }
+
+    public void setCustomizedTraceTopic(String customizedTraceTopic) {
+        this.customizedTraceTopic = customizedTraceTopic;
+    }
 
     public String getWorkerId() {
         return workerId;
@@ -436,6 +447,14 @@ public class WorkerConfig {
 
     public void setAutoCreateGroupEnable(boolean autoCreateGroupEnable) {
         this.autoCreateGroupEnable = autoCreateGroupEnable;
+    }
+
+    public boolean isEnableMsgTrace() {
+        return enableMsgTrace;
+    }
+
+    public void setEnableMsgTrace(boolean enableMsgTrace) {
+        this.enableMsgTrace = enableMsgTrace;
     }
 
     public String getAdminExtGroup() {

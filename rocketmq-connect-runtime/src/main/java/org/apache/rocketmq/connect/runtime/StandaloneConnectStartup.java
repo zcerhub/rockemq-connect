@@ -131,6 +131,9 @@ public class StandaloneConnectStartup {
                 in.close();
             }
 
+
+            config.setConnectHome("D:\\code\\rocketmq-connect\\distribution");
+
             if (null == config.getConnectHome()) {
                 System.out.printf("Please set the %s variable in your environment to match the location of the Connect installation", WorkerConfig.CONNECT_HOME_ENV);
                 System.exit(-2);
@@ -140,8 +143,12 @@ public class StandaloneConnectStartup {
             JoranConfigurator configurator = new JoranConfigurator();
             configurator.setContext(lc);
             lc.reset();
-            configurator.doConfigure(config.getConnectHome() + "/conf/logback.xml");
+            configurator.doConfigure(config.getConnectHome() + "\\conf\\logback.xml");
 
+//            config.setPluginPaths("D:\\code\\rocketmq-connect\\distribution\\target\\rocketmq-connect-0.0.1-SNAPSHOT\\rocketmq-connect-0.0.1-SNAPSHOT\\rocketmq-connect-sample\\target\\rocketmq-connect-sample-0.0.1-SNAPSHOT.jar");
+            config.setPluginPaths("D:\\code\\rocketmq-connect\\distribution\\connector-plugins");
+            config.setNamesrvAddr("localhost:9876");
+            config.setHttpPort(18082);
             List<String> pluginPaths = new ArrayList<>(16);
             if (StringUtils.isNotEmpty(config.getPluginPaths())) {
                 String[] strArr = config.getPluginPaths().split(",");

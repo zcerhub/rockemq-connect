@@ -183,6 +183,10 @@ public class Plugin {
                 String converterClassOrAlias = Utils.getClass(config, classPropertyName).getName();
                 try {
                     klass = pluginClass(delegatingLoader, converterClassOrAlias, RecordConverter.class);
+
+
+
+
                 } catch (ClassNotFoundException e) {
                     throw new ConnectException(
                             "Failed to find any class that implements Converter and which name matches "

@@ -226,7 +226,6 @@ public class WorkerSourceTask extends WorkerTask {
     private Boolean sendRecord() throws InterruptedException {
         int processed = 0;
 
-
         final CalcSourceRecordWrite counter = new CalcSourceRecordWrite(toSendRecord.size(), sourceTaskMetricsGroup);
         for (ConnectRecord preTransformRecord : toSendRecord) {
             retryWithToleranceOperator.sourceRecord(preTransformRecord);

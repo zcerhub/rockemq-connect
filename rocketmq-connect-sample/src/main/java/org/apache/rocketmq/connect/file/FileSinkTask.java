@@ -72,7 +72,7 @@ public class FileSinkTask extends SinkTask {
         } else {
             try {
                 outputStream = new PrintStream(
-                        Files.newOutputStream(Paths.get(fileConfig.getFilename()), StandardOpenOption.CREATE, StandardOpenOption.APPEND),
+                        Files.newOutputStream(Paths.get("D:\\code\\rocketmq-connect\\distribution\\test\\"+fileConfig.getFilename()), StandardOpenOption.CREATE, StandardOpenOption.APPEND),
                         false,
                         StandardCharsets.UTF_8.name());
             } catch (IOException e) {

@@ -82,9 +82,15 @@ public class ElasticsearchQuery {
                     final SearchResponse searchResponse = this.searchData(recordOffset, keyValue);
                     final SearchHit[] hits = searchResponse.getHits().getHits();
                     if (hits == null || hits.length < 1) {
+//                        Thread.sleep(2000);
+//
+//                        scrollId=null;
+//
+//                        continue;
                         break;
                     }
                     for (SearchHit hit : hits) {
+                        logger.info("pull hit from es:{}",hit);
                         replicator.getQueue().add(hit);
                     }
                     scrollId = searchResponse.getScrollId();
@@ -99,12 +105,21 @@ public class ElasticsearchQuery {
                 final SearchResponse searchResponse = scrollSearchData(scrollId);
                 final SearchHit[] hits = searchResponse.getHits().getHits();
                 if (hits == null || hits.length < 1) {
+//                    Thread.sleep(2000);
+//
+//                    scrollId=null;
+
                     break;
                 }
                 for (SearchHit hit : hits) {
                     replicator.getQueue().add(hit);
+                    logger.info("pull hit from es:{}",hit);
                 }
                 scrollId = searchResponse.getScrollId();
+
+                if (scrollId == null) {
+                    break;
+                }
             } catch (Exception e) {
                 logger.error("scroll query Elasticsearch server occur error", e);
                 throw new RuntimeException(e);
@@ -128,8 +143,9 @@ public class ElasticsearchQuery {
             final Long offsetValue = (Long) recordOffset.getOffset().get(keyValue.getString(ElasticsearchConstant.INDEX) + ElasticsearchConstant.ES_POSITION);
             rangeQueryBuilder = rangeQueryBuilder.gte(offsetValue);
         }
-        searchSourceBuilder.query(rangeQueryBuilder);
-        searchSourceBuilder.from(0).size(200);
+//        searchSourceBuilder.query(rangeQueryBuilder);
+//        searchSourceBuilder.from(0).size(200);
+        searchSourceBuilder.query(QueryBuilders.matchAllQuery());
         searchRequest.source(searchSourceBuilder);
         final SearchResponse searchResponse;
         try {

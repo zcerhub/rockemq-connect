@@ -47,11 +47,11 @@ import static org.apache.rocketmq.connect.file.FileConstants.NEXT_POSITION;
 
 public class FileSourceTask extends SourceTask {
 
-    private Logger log = LoggerFactory.getLogger(LoggerName.FILE_CONNECTOR);
+    private static Logger log = LoggerFactory.getLogger(LoggerName.FILE_CONNECTOR);
 
     private FileConfig fileConfig;
 
-    private InputStream stream;
+    private static InputStream stream;
     private BufferedReader reader = null;
     private char[] buffer = new char[1024];
     private int offset = 0;
@@ -61,13 +61,21 @@ public class FileSourceTask extends SourceTask {
 
     private KeyValue config;
 
+    public static void main(String[] args) throws IOException {
+        /*stream = Files.newInputStream(Paths.get());
+        System.out.println(stream);*/
+        log.info("positionInfo is not null!");
+    }
+
     @Override public List<ConnectRecord> poll() {
         log.info("Start a poll stream is null:{}", stream == null);
         if (stream == null) {
             try {
-                stream = Files.newInputStream(Paths.get(fileConfig.getFilename()));
+//                fileConfig.setFilename("D:\\code\\rocketmq-connect\\distribution\\"+fileConfig.getFilename());
+                stream = Files.newInputStream(Paths.get("D:\\code\\rocketmq-connect\\distribution\\test\\"+fileConfig.getFilename()));
                 RecordOffset positionInfo = this.sourceTaskContext.offsetStorageReader().readOffset(offsetKey(FileConstants.getPartition(fileConfig.getFilename())));
                 if (positionInfo != null && null != positionInfo.getOffset()) {
+
                     log.info("positionInfo is not null!");
                     Map<String, ?> offset = (Map<String, String>) positionInfo.getOffset();
                     Object lastRecordedOffset = offset.get(NEXT_POSITION);

@@ -20,6 +20,9 @@ import io.openmessaging.KeyValue;
 import io.openmessaging.connector.api.component.task.source.SourceTask;
 import io.openmessaging.connector.api.data.ConnectRecord;
 import io.openmessaging.connector.api.errors.ConnectException;
+import io.opentelemetry.context.propagation.ContextPropagators;
+import io.opentelemetry.context.propagation.TextMapGetter;
+import io.opentelemetry.context.propagation.TextMapPropagator;
 import org.apache.kafka.connect.runtime.TaskConfig;
 import org.apache.kafka.connect.source.SourceRecord;
 import org.apache.kafka.connect.source.SourceTaskContext;
@@ -29,6 +32,8 @@ import org.apache.rocketmq.connect.kafka.connect.adaptor.context.KafkaOffsetStor
 import org.apache.rocketmq.connect.kafka.connect.adaptor.context.RocketMQKafkaSourceTaskContext;
 import org.apache.rocketmq.connect.kafka.connect.adaptor.schema.Converters;
 import org.apache.rocketmq.connect.kafka.connect.adaptor.transforms.TransformationWrapper;
+import org.apache.rocketmq.connect.kafka.connect.adaptor.utils.RocketmqConnectSpan;
+import org.apache.rocketmq.connect.kafka.connect.adaptor.utils.RocketmqTracingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +66,10 @@ public abstract class AbstractKafkaConnectSource extends SourceTask implements T
         }
         List<ConnectRecord> records = new ArrayList<>();
         for (SourceRecord sourceRecord : recordList) {
+
+            RocketmqTracingUtils.buildAndFinishSpan(RocketmqConnectSpan.SOURCE_DEBEZIUM_SPAN,sourceRecord,
+                    contextPropagators(),extractor());
+
             // transforms
             SourceRecord transformRecord = transforms(sourceRecord);
             if (transformRecord == null){
@@ -74,6 +83,14 @@ public abstract class AbstractKafkaConnectSource extends SourceTask implements T
         }
         return records;
     }
+
+    protected ContextPropagators contextPropagators(){
+        return ContextPropagators.noop();
+    };
+
+    protected TextMapGetter extractor(){
+        return null;
+    };
 
     /**
      * convert transform
@@ -123,6 +140,9 @@ public abstract class AbstractKafkaConnectSource extends SourceTask implements T
         sourceTask.initialize(kafkaSourceTaskContext);
         sourceTask.start(taskConfig);
         transformationWrapper = new TransformationWrapper(taskConfig);
+
+
+
     }
 
 

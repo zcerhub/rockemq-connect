@@ -139,6 +139,8 @@ public class MemoryStateManagementServiceImpl implements StateManagementService 
     /**
      * Get the current state of the connector.
      *
+     *
+     *
      * @param connector the connector name
      * @return the state or null if there is none
      */
